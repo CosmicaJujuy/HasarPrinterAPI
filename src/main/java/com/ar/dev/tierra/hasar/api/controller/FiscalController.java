@@ -39,7 +39,8 @@ public class FiscalController implements Serializable {
             if (cpi.getPortType() == CommPortIdentifier.PORT_SERIAL) {
                 String str = cpi.getName();
                 String[] port = str.split("(?<=\\D)(?=\\d)");
-                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p" + port[1] + "-f test.615");
+//                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p" + port[1] + "-f test.615");
+                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "dir");
                 builder.redirectErrorStream(true);
                 Process p = builder.start();
                 
