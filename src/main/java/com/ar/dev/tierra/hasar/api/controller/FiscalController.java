@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Enumeration;
+import javax.comm.CommPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,31 +29,18 @@ import javax.comm.UnsupportedCommOperationException;
 public class FiscalController implements Serializable {
 
     static SerialPort serialPort;
-    static OutputStream outputStream;
-    static String messageString = "Hello, world!\n";
     
     @RequestMapping(value = "/connection", method = RequestMethod.POST)
     public ResponseEntity<?> isConnected() throws PortInUseException, IOException {
-        Enumeration pList = CommPortIdentifier.getPortIdentifiers();
-
+        Enumeration pList = CommPortIdentifier.getPortIdentifiers();        
+        
         while (pList.hasMoreElements()) {
             CommPortIdentifier cpi = (CommPortIdentifier) pList.nextElement();
-            System.out.print("Port " + cpi.getName() + " ");
-            switch (cpi.getPortType()) {
-                case CommPortIdentifier.PORT_SERIAL:
-                    System.out.println("is a Serial Port: " + cpi.getCurrentOwner());
-                    System.out.println("is a Serial Port: " + cpi.getName());
-                    serialPort = (SerialPort) cpi.open("SimpleWriteApp", 2000);
-                    outputStream = serialPort.getOutputStream();
-                    System.out.println(serialPort.getName());
-                    outputStream.write(messageString.getBytes());
-                    break;
-                case CommPortIdentifier.PORT_PARALLEL:
-                    System.out.println("is a Parallel Port: " + cpi);
-                    break;
-                default:
-                    System.out.println("is an Unknown Port: " + cpi);
-                    break;
+            if(cpi.getPortType() == CommPortIdentifier.PORT_SERIAL){
+                
+                System.out.println(cpi.getCurrentOwner());
+                System.out.println(cpi.getName());
+                System.out.println(cpi.toString());
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
