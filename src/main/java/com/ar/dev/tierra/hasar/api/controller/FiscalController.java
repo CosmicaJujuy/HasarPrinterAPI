@@ -39,17 +39,16 @@ public class FiscalController implements Serializable {
             if (cpi.getPortType() == CommPortIdentifier.PORT_SERIAL) {
                 String str = cpi.getName();
                 String[] port = str.split("(?<=\\D)(?=\\d)");
-//                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p" + port[1] + "-f test.615");
-                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "dir");
+                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p" + port[1] + (char) 34 + "*" + (char) 34);
                 builder.redirectErrorStream(true);
                 Process p = builder.start();
-                
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 String line;
                 while ((line = reader.readLine()) != null) {
                     System.out.println(line);
                 }
-                
+
                 List<String> respuestaList = new ArrayList<>();
                 try {
                     FileInputStream respuesta = new FileInputStream("command/respuesta.ans");
@@ -63,7 +62,7 @@ public class FiscalController implements Serializable {
                         br.close();
                     }
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println("Error: "+e);
                 }
             }
         }
