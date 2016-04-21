@@ -33,7 +33,7 @@ public class TicketController implements Serializable {
      * @throws IOException
      */
     @RequestMapping(value = "/test", method = RequestMethod.POST)
-    public ResponseEntity<?> test(@RequestBody Object o, HttpServletRequest request) throws MalformedURLException, IOException {
+    public ResponseEntity<?> test(HttpServletRequest request) throws MalformedURLException, IOException {
         String response = "Test exitoso, direccion IP: " + request.getRemoteAddr();
         try (PrintWriter ws = new PrintWriter("command/test.615")) {
             ws.println("@" + (char) 28 + "T" + (char) 28 + "T");
