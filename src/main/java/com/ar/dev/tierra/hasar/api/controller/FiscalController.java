@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -39,10 +40,14 @@ public class FiscalController implements Serializable {
             if (cpi.getPortType() == CommPortIdentifier.PORT_SERIAL) {
                 String str = cpi.getName();
                 String[] port = str.split("(?<=\\D)(?=\\d)");
-                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p" + port[1] + (char) 34 + "*" + (char) 34);
+                try (PrintWriter ws = new PrintWriter("command/estado.txt")) {
+                    ws.println((char) 42);
+                }
+                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p" + port[1] + "-f estado.615");
+//                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & dir");
                 builder.redirectErrorStream(true);
                 Process p = builder.start();
-
+                
                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -62,7 +67,7 @@ public class FiscalController implements Serializable {
                         br.close();
                     }
                 } catch (Exception e) {
-                    System.out.println("Error: "+e);
+                    System.out.println("Error: " + e);
                 }
             }
         }
