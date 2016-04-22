@@ -32,28 +32,31 @@ import javax.comm.SerialPort;
 public class FiscalController implements Serializable {
 
     @RequestMapping(value = "/connection", method = RequestMethod.POST)
-    public ResponseEntity<?> isConnected() throws PortInUseException, IOException {
+    public ResponseEntity<?> isConnected() throws PortInUseException, IOException, InterruptedException {
+        /*LISTA DE PUERTOS COM*/
         Enumeration pList = CommPortIdentifier.getPortIdentifiers();
-
+        /*Bucle control puertos conectados a la impresora*/
+        
         while (pList.hasMoreElements()) {
+            /*Identificamos tipo de puerto*/
             CommPortIdentifier cpi = (CommPortIdentifier) pList.nextElement();
             if (cpi.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                /*Split del nombre del puerto para identificar el numero*/
                 String str = cpi.getName();
                 String[] port = str.split("(?<=\\D)(?=\\d)");
-                try (PrintWriter ws = new PrintWriter("command/estado.txt")) {
-                    ws.println((char) 42);
+                /*Armamos string para ejecutar comando con el estado de la impresora*/
+                String comando = "cmd /c cd command & wspooler -p" + port[1] + " -f estado.txt";
+                Process p = Runtime.getRuntime().exec(comando);
+                p.waitFor();
+                /*Lectura de la respuesta del comando*/
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println("Respuesta: "+line);
+                    }
+                    reader.close();
                 }
-                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p" + port[1] + "-f estado.615");
-//                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & dir");
-                builder.redirectErrorStream(true);
-                Process p = builder.start();
                 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-
                 List<String> respuestaList = new ArrayList<>();
                 try {
                     FileInputStream respuesta = new FileInputStream("command/respuesta.ans");
@@ -67,7 +70,7 @@ public class FiscalController implements Serializable {
                         br.close();
                     }
                 } catch (Exception e) {
-                    System.out.println("Error: " + e);
+                    System.out.println("Error al leer: " + e);
                 }
             }
         }
