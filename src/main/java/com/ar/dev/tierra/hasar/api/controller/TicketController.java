@@ -44,6 +44,12 @@ public class TicketController implements Serializable {
         ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", "cd command & wspooler -p3 -f test.615");
         builder.redirectErrorStream(true);
         Process p = builder.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+        
         List<String> list2 = new ArrayList<>();
         List<String> lastThree = new ArrayList<>();
         try {
