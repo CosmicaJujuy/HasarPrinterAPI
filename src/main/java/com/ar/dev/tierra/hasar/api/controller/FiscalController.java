@@ -6,6 +6,7 @@
 package com.ar.dev.tierra.hasar.api.controller;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,8 +37,8 @@ public class FiscalController implements Serializable {
         /*LISTA DE PUERTOS COM*/
         Enumeration pList = CommPortIdentifier.getPortIdentifiers();
         /*Bucle control puertos conectados a la impresora*/
-        
-        while (pList.hasMoreElements()) {
+        boolean printer = false;
+        while (pList.hasMoreElements() && printer == false) {
             /*Identificamos tipo de puerto*/
             CommPortIdentifier cpi = (CommPortIdentifier) pList.nextElement();
             if (cpi.getPortType() == CommPortIdentifier.PORT_SERIAL) {
@@ -52,22 +53,27 @@ public class FiscalController implements Serializable {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println("Respuesta: "+line);
+                        System.out.println("Respuesta: " + line);
                     }
                     reader.close();
                 }
-                
+
                 List<String> respuestaList = new ArrayList<>();
                 try {
-                    FileInputStream respuesta = new FileInputStream("command/respuesta.ans");
-                    try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
-                        String strLine;
-                        /* read log line by line */
-                        while ((strLine = br.readLine()) != null) {
-                            respuestaList.add(strLine);
+                    try (FileInputStream respuesta = new FileInputStream("command/estado.ans")) {
+                        try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
+                            String strLine;
+                            /* read log line by line */
+                            while ((strLine = br.readLine()) != null) {
+                                respuestaList.add(strLine);
+                            }
+                            System.out.println(respuestaList);
+                            br.close();
                         }
-                        System.out.println(respuestaList);
-                        br.close();
+                        File file = new File("command/estado.ans");
+                        if (file.exists()) {
+                            file.delete();
+                        }
                     }
                 } catch (Exception e) {
                     System.out.println("Error al leer: " + e);
