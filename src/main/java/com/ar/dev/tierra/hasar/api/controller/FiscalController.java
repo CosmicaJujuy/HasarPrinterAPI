@@ -5,13 +5,21 @@
  */
 package com.ar.dev.tierra.hasar.api.controller;
 
+import com.ar.dev.tierra.hasar.api.dao.FiscalDAO;
+import com.ar.dev.tierra.hasar.api.model.DetalleFactura;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -22,7 +30,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import javax.comm.CommPortIdentifier;
 import javax.comm.PortInUseException;
-import javax.comm.SerialPort;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -31,6 +41,9 @@ import javax.comm.SerialPort;
 @RestController
 @RequestMapping("/fiscal")
 public class FiscalController implements Serializable {
+    
+    @Autowired
+    private FiscalDAO fiscalDAO;
 
     @RequestMapping(value = "/connection", method = RequestMethod.POST)
     public ResponseEntity<?> isConnected() throws PortInUseException, IOException, InterruptedException {
@@ -57,9 +70,10 @@ public class FiscalController implements Serializable {
                     }
                     reader.close();
                 }
-
+                /*Lectura del archivo estado.ans con la respuesta de la impresora*/
                 List<String> respuestaList = new ArrayList<>();
                 try {
+                    /*Abrimos archivo estado.ans*/
                     try (FileInputStream respuesta = new FileInputStream("command/estado.ans")) {
                         try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
                             String strLine;
@@ -70,17 +84,48 @@ public class FiscalController implements Serializable {
                             System.out.println(respuestaList);
                             br.close();
                         }
+                        /*Comprobamos su existencia y eliminamos*/
                         File file = new File("command/estado.ans");
                         if (file.exists()) {
+                            printer = true;
                             file.delete();
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println("Error al leer: " + e);
+                    System.out.println("Error: " + e);
                 }
             }
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        /*Retornamos respuesta de conexion acorde a los resultados*/
+        if (printer) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/ticket", method = RequestMethod.POST)
+    public ResponseEntity<?> ticket(@RequestBody List<DetalleFactura> detalles) {
+        String ticket_ans = fiscalDAO.ticket(detalles);
+        return null;
+    }
+
+    @RequestMapping(value = "/factura/A", method = RequestMethod.POST)
+    public ResponseEntity<?> factura_A(@RequestParam("detalles") List<DetalleFactura> detalles) {
+
+        return null;
+    }
+
+    @RequestMapping(value = "/factura/B", method = RequestMethod.POST)
+    public ResponseEntity<?> factura_B(@RequestParam("detalles") List<DetalleFactura> detalles) {
+
+        return null;
+    }
+
+    @RequestMapping(value = "/factura/C", method = RequestMethod.POST)
+    public ResponseEntity<?> factura_C(@RequestParam("detalles") List<DetalleFactura> detalles) {
+
+        return null;
     }
 
 }

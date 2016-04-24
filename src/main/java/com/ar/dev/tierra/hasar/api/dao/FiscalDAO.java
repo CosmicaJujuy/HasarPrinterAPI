@@ -5,6 +5,7 @@
  */
 package com.ar.dev.tierra.hasar.api.dao;
 
+import com.ar.dev.tierra.hasar.api.model.DetalleFactura;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +14,14 @@ import org.springframework.stereotype.Component;
  * @author PauloGaldo
  */
 @Component
-public interface PrinterDAO {
+public interface FiscalDAO {
 
-    public int loginPrinter(String ipFrom);
-    
-    public List<String> print(int option);
+    public String ticket(List<DetalleFactura> detalles);
+
+    public String factura_a(List<DetalleFactura> detalles);
+
+    public String factura_b(List<DetalleFactura> detalles);
+
+    public String factura_c(List<DetalleFactura> detalles);
 
 }
