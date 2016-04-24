@@ -60,7 +60,7 @@ public class PrinterDAOImpl implements PrinterDAO {
                         break;
                 }
                 try {
-                    Process p = Runtime.getRuntime().exec(comando);
+                    Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p" + port[1] + " -f ticket.200");
                     p.waitFor();
                     /*Lectura de la respuesta del comando*/
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
