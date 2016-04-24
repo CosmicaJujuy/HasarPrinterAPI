@@ -62,6 +62,14 @@ public class PrinterDAOImpl implements PrinterDAO {
                 try {
                     Process p = Runtime.getRuntime().exec(comando);
                     p.waitFor();
+                    /*Lectura de la respuesta del comando*/
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println("Respuesta: " + line);
+                        }
+                        reader.close();
+                    }
                 } catch (IOException | InterruptedException e) {
                     System.out.println(e);
                 }
