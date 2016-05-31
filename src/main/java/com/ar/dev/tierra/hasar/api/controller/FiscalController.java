@@ -15,11 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -41,11 +36,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/fiscal")
 public class FiscalController implements Serializable {
-    
+
     @Autowired
     private FiscalDAO fiscalDAO;
 
-    @RequestMapping(value = "/connection", method = RequestMethod.POST)
+    @RequestMapping(value = "/connection", method = RequestMethod.GET)
     public ResponseEntity<?> isConnected() throws PortInUseException, IOException, InterruptedException {
         /*LISTA DE PUERTOS COM*/
         Enumeration pList = CommPortIdentifier.getPortIdentifiers();
@@ -105,9 +100,38 @@ public class FiscalController implements Serializable {
     }
 
     @RequestMapping(value = "/ticket", method = RequestMethod.POST)
-    public ResponseEntity<?> ticket(@RequestBody List<DetalleFactura> detalles) {
-        String ticket_ans = fiscalDAO.ticket(detalles);
-        return null;
+    public ResponseEntity<?> ticket(@RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
+        fiscalDAO.ticket(detalles);
+        List<String> respuestaList = new ArrayList<>();
+        File ticket = new File("command/ticket.200");
+        if (ticket.exists()) {
+            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f ticket.200");
+            p.waitFor();
+            try (FileInputStream respuesta = new FileInputStream("command/ticket.ans")) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
+                    String strLine;
+                    /* read log line by line */
+                    while ((strLine = br.readLine()) != null) {
+                        respuestaList.add(strLine);
+                    }
+                    System.out.println(respuestaList);
+                    br.close();
+                }
+                /*Comprobamos su existencia y eliminamos*/
+                File file = new File("command/ticket.ans");
+                File ticket_ans = new File("command/ticket.200");
+                if (file.exists()) {
+                    file.delete();
+                    ticket_ans.delete();
+                }
+            }
+        }
+//        respuestaList.add("000000000000|00000023");
+        if (!respuestaList.isEmpty()) {
+            return new ResponseEntity<>(respuestaList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/factura/A", method = RequestMethod.POST)
@@ -126,6 +150,41 @@ public class FiscalController implements Serializable {
     public ResponseEntity<?> factura_C(@RequestParam("detalles") List<DetalleFactura> detalles) {
 
         return null;
+    }
+
+    @RequestMapping(value = "/comprobante/Z", method = RequestMethod.POST)
+    public ResponseEntity<?> comprobante_Z() throws FileNotFoundException, IOException, InterruptedException {
+        PrintWriter comprobante = new PrintWriter("command/compZ.200");
+        comprobante.println("9 Z");
+        List<String> respuestaList = new ArrayList<>();
+        File compZ = new File("command/compZ.200");
+        if (compZ.exists()) {
+            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f compZ.200");
+            p.waitFor();
+            try (FileInputStream respuesta = new FileInputStream("command/compZ.ans")) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
+                    String strLine;
+                    /* read log line by line */
+                    while ((strLine = br.readLine()) != null) {
+                        respuestaList.add(strLine);
+                    }
+                    System.out.println(respuestaList);
+                    br.close();
+                }
+                /*Comprobamos su existencia y eliminamos*/
+                File file = new File("command/compZ.ans");
+                File ticket_ans = new File("command/compZ.200");
+                if (file.exists()) {
+                    file.delete();
+                    ticket_ans.delete();
+                }
+            }
+        }
+        if (!respuestaList.isEmpty()) {
+            return new ResponseEntity<>(respuestaList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

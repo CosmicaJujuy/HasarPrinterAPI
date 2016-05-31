@@ -6,24 +6,16 @@
 package com.ar.dev.tierra.hasar.api.dao.impl;
 
 import com.ar.dev.tierra.hasar.api.dao.FiscalDAO;
-import com.ar.dev.tierra.hasar.api.dao.PrinterDAO;
 import com.ar.dev.tierra.hasar.api.model.DetalleFactura;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,11 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FiscalDAOImpl implements FiscalDAO {
 
-    @Autowired
-    private PrinterDAO printerDAO;
-    
     @Override
-    public String ticket(List<DetalleFactura> detalles) {
+    public void ticket(List<DetalleFactura> detalles) {
         try (PrintWriter ticket = new PrintWriter("command/ticket.200")) {
             DecimalFormat decimalFormat = new DecimalFormat();
             decimalFormat.setMaximumFractionDigits(1);
@@ -75,11 +64,9 @@ public class FiscalDAOImpl implements FiscalDAO {
                 /*cierre linea descuento*/
             }
             ticket.println("E");
-            List<String> responsePrinter = printerDAO.print(1);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(FiscalDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }        
-        return null;
+        }
     }
 
     @Override

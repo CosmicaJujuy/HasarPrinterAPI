@@ -3,8 +3,9 @@ package com.ar.dev.tierra.hasar.api.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 /**
- * 
+ *
  * @author PauloGaldo
  */
 public class Producto implements Serializable {
@@ -25,17 +26,17 @@ public class Producto implements Serializable {
     private int cantidadTotal;
     private int cantidadMinima;
     private String talla;
-    private Date fechaProducto;
     private boolean estadoProducto;
     private Date fechaCreacion;
     private Date fechaModificacion;
     private int usuarioCreacion;
     private Integer usuarioModificacion;
+    private Boolean estadoDistribucion;
 
     public Producto() {
     }
 
-    public Producto(int idProducto, String codigoProducto, String claseProducto, Categoria categoria, Marcas marcas, FacturaProducto facturaProducto, Sexo sexo, Temporada temporada, String descripcion, String colorProducto, BigDecimal precioCosto, BigDecimal precioVenta, BigDecimal precioLista, int cantidadTotal, int cantidadMinima, String talla, Date fechaProducto, boolean estadoProducto, Date fechaCreacion, Date fechaModificacion, int usuarioCreacion, Integer usuarioModificacion) {
+    public Producto(int idProducto, String codigoProducto, String claseProducto, Categoria categoria, Marcas marcas, FacturaProducto facturaProducto, Sexo sexo, Temporada temporada, String descripcion, String colorProducto, BigDecimal precioCosto, BigDecimal precioVenta, BigDecimal precioLista, int cantidadTotal, int cantidadMinima, String talla, boolean estadoProducto, Date fechaCreacion, Date fechaModificacion, int usuarioCreacion, Integer usuarioModificacion, Boolean estadoDistribucion) {
         this.idProducto = idProducto;
         this.codigoProducto = codigoProducto;
         this.claseProducto = claseProducto;
@@ -52,12 +53,12 @@ public class Producto implements Serializable {
         this.cantidadTotal = cantidadTotal;
         this.cantidadMinima = cantidadMinima;
         this.talla = talla;
-        this.fechaProducto = fechaProducto;
         this.estadoProducto = estadoProducto;
         this.fechaCreacion = fechaCreacion;
         this.fechaModificacion = fechaModificacion;
         this.usuarioCreacion = usuarioCreacion;
         this.usuarioModificacion = usuarioModificacion;
+        this.estadoDistribucion = estadoDistribucion;
     }
 
     /**
@@ -285,20 +286,6 @@ public class Producto implements Serializable {
     }
 
     /**
-     * @return the fechaProducto
-     */
-    public Date getFechaProducto() {
-        return fechaProducto;
-    }
-
-    /**
-     * @param fechaProducto the fechaProducto to set
-     */
-    public void setFechaProducto(Date fechaProducto) {
-        this.fechaProducto = fechaProducto;
-    }
-
-    /**
      * @return the estadoProducto
      */
     public boolean isEstadoProducto() {
@@ -366,6 +353,20 @@ public class Producto implements Serializable {
      */
     public void setUsuarioModificacion(Integer usuarioModificacion) {
         this.usuarioModificacion = usuarioModificacion;
+    }
+
+    /**
+     * @return the estadoDistribucion
+     */
+    public Boolean getEstadoDistribucion() {
+        return estadoDistribucion;
+    }
+
+    /**
+     * @param estadoDistribucion the estadoDistribucion to set
+     */
+    public void setEstadoDistribucion(Boolean estadoDistribucion) {
+        this.estadoDistribucion = estadoDistribucion;
     }
 
 }

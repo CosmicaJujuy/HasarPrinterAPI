@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface FiscalDAO {
 
-    public String ticket(List<DetalleFactura> detalles);
+    public void ticket(List<DetalleFactura> detalles);
 
     public String factura_a(List<DetalleFactura> detalles);
 

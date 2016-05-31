@@ -3,8 +3,9 @@ package com.ar.dev.tierra.hasar.api.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 /**
- * 
+ *
  * @author PauloGaldo
  */
 public class Factura implements Serializable {
@@ -19,11 +20,13 @@ public class Factura implements Serializable {
     private Integer usuarioModificacion;
     private BigDecimal total;
     private String tipoFactura;
+    private String numeracion;
+    private int idSucursal;
 
     public Factura() {
     }
 
-    public Factura(int idFactura, Cliente cliente, String estado, Usuarios idVendedor, Date fechaCreacion, Date fechaModificacion, Integer usuarioCreacion, Integer usuarioModificacion, BigDecimal total, String tipoFactura) {
+    public Factura(int idFactura, Cliente cliente, String estado, Usuarios idVendedor, Date fechaCreacion, Date fechaModificacion, Integer usuarioCreacion, Integer usuarioModificacion, BigDecimal total, String tipoFactura, String numeracion, int idSucursal) {
         this.idFactura = idFactura;
         this.cliente = cliente;
         this.estado = estado;
@@ -34,6 +37,8 @@ public class Factura implements Serializable {
         this.usuarioModificacion = usuarioModificacion;
         this.total = total;
         this.tipoFactura = tipoFactura;
+        this.numeracion = numeracion;
+        this.idSucursal = idSucursal;
     }
 
     /**
@@ -174,6 +179,34 @@ public class Factura implements Serializable {
      */
     public void setTipoFactura(String tipoFactura) {
         this.tipoFactura = tipoFactura;
+    }
+
+    /**
+     * @return the numeracion
+     */
+    public String getNumeracion() {
+        return numeracion;
+    }
+
+    /**
+     * @param numeracion the numeracion to set
+     */
+    public void setNumeracion(String numeracion) {
+        this.numeracion = numeracion;
+    }
+
+    /**
+     * @return the idSucursal
+     */
+    public int getIdSucursal() {
+        return idSucursal;
+    }
+
+    /**
+     * @param idSucursal the idSucursal to set
+     */
+    public void setIdSucursal(int idSucursal) {
+        this.idSucursal = idSucursal;
     }
 
 }
