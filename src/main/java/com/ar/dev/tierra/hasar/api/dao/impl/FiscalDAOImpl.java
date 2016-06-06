@@ -6,6 +6,7 @@
 package com.ar.dev.tierra.hasar.api.dao.impl;
 
 import com.ar.dev.tierra.hasar.api.dao.FiscalDAO;
+import com.ar.dev.tierra.hasar.api.model.Cliente;
 import com.ar.dev.tierra.hasar.api.model.DetalleFactura;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -70,17 +71,61 @@ public class FiscalDAOImpl implements FiscalDAO {
     }
 
     @Override
-    public String factura_a(List<DetalleFactura> detalles) {
+    public void factura_a(List<DetalleFactura> detalles, Cliente cliente) {
+        try (PrintWriter ticket = new PrintWriter("command/factura_a.200")) {
+            DecimalFormat decimalFormat = new DecimalFormat();
+            decimalFormat.setMaximumFractionDigits(1);
+            ticket.println(
+                    "b" + (char) 28
+                    + cliente.getNombreCliente() + (char) 28
+                    + cliente.getDocumento() + (char) 28
+                    + cliente.getResponsabilidadIva() + (char) 28
+                    + cliente.getTipoDocumento() + (char) 28
+                    + cliente.getDomicilio());
+            ticket.println("@" + (char) 28 + "A" + (char) 28 + "T");
+            BigDecimal descuento = new BigDecimal(BigInteger.ZERO);
+            for (DetalleFactura detalle : detalles) {
+                if (detalle.getDescuentoDetalle() != null) {
+                    descuento = descuento.add(detalle.getDescuentoDetalle());
+                }
+                String price = null;
+                BigDecimal sinIVA = detalle.getProducto().getPrecioVenta().subtract(detalle.getProducto().getPrecioVenta().multiply(new BigDecimal(17.35)).divide(new BigDecimal(100)));
+                price = sinIVA.setScale(4, RoundingMode.HALF_UP).toString();
+                ticket.println(
+                        "B" + (char) 28 /*Abrimos linea*/
+                        + detalle.getProducto().getDescripcion() + (char) 28 /*Nombre producto*/
+                        + detalle.getCantidadDetalle() + ".0" + (char) 28 /*Cantidad*/
+                        + price.replace(",", ".") + (char) 28 /*Precio unitario*/
+                        + "21.0" + (char) 28 /*Impuestos IVA*/
+                        + "M" + (char) 28 /*Suma monto*/
+                        + "0.0" + (char) 28 /*Impuestos internos*/
+                        + "0" + (char) 28 /*Parametro display*/
+                        + "b");
+                /*Cierra de linea*/
+            }
+            if (!descuento.equals(new BigDecimal(BigInteger.ZERO))) {
+                ticket.println(
+                        "T" + (char) 28 /*Abrimos linea descuento*/
+                        + "Descuento: " + (char) 28 /*Texto a mostrar*/
+                        + descuento + (char) 28 /*Monto descuento*/
+                        + "m" + (char) 28 /*m: descuento, M: aumento*/
+                        + "0" + (char) 28 /*parametro display*/
+                        + "T");
+                /*cierre linea descuento*/
+            }
+            ticket.println("E");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(FiscalDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void factura_b(List<DetalleFactura> detalles, Cliente cliente) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String factura_b(List<DetalleFactura> detalles) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String factura_c(List<DetalleFactura> detalles) {
+    public void factura_c(List<DetalleFactura> detalles, Cliente cliente) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

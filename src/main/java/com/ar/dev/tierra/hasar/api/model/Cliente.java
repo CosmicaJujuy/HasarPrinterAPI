@@ -2,17 +2,17 @@ package com.ar.dev.tierra.hasar.api.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
 /**
- * 
+ *
  * @author PauloGaldo
  */
 public class Cliente implements Serializable {
 
     private int idCliente;
     private String nombreCliente;
-    private String apellidoCliente;
     private Date fechaNacimiento;
-    private String dniCuit;
+    private String documento;
     private String domicilio;
     private String telefono;
     private String emailCliente;
@@ -20,22 +20,17 @@ public class Cliente implements Serializable {
     private Date fechaModificacion;
     private int usuarioCreacion;
     private Integer usuarioModificacion;
+    private String responsabilidadIva;
+    private String tipoDocumento;
 
     public Cliente() {
     }
 
-    public Cliente(int idCliente, Date fechaCreacion, int usuarioCreacion) {
-        this.idCliente = idCliente;
-        this.fechaCreacion = fechaCreacion;
-        this.usuarioCreacion = usuarioCreacion;
-    }
-
-    public Cliente(int idCliente, String nombreCliente, String apellidoCliente, Date fechaNacimiento, String dniCuit, String domicilio, String telefono, String emailCliente, Date fechaCreacion, Date fechaModificacion, int usuarioCreacion, Integer usuarioModificacion) {
+    public Cliente(int idCliente, String nombreCliente, Date fechaNacimiento, String documento, String domicilio, String telefono, String emailCliente, Date fechaCreacion, Date fechaModificacion, int usuarioCreacion, Integer usuarioModificacion, String responsabilidadIva, String tipoDocumento) {
         this.idCliente = idCliente;
         this.nombreCliente = nombreCliente;
-        this.apellidoCliente = apellidoCliente;
         this.fechaNacimiento = fechaNacimiento;
-        this.dniCuit = dniCuit;
+        this.documento = documento;
         this.domicilio = domicilio;
         this.telefono = telefono;
         this.emailCliente = emailCliente;
@@ -43,6 +38,8 @@ public class Cliente implements Serializable {
         this.fechaModificacion = fechaModificacion;
         this.usuarioCreacion = usuarioCreacion;
         this.usuarioModificacion = usuarioModificacion;
+        this.responsabilidadIva = responsabilidadIva;
+        this.tipoDocumento = tipoDocumento;
     }
 
     /**
@@ -74,20 +71,6 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the apellidoCliente
-     */
-    public String getApellidoCliente() {
-        return apellidoCliente;
-    }
-
-    /**
-     * @param apellidoCliente the apellidoCliente to set
-     */
-    public void setApellidoCliente(String apellidoCliente) {
-        this.apellidoCliente = apellidoCliente;
-    }
-
-    /**
      * @return the fechaNacimiento
      */
     public Date getFechaNacimiento() {
@@ -102,17 +85,17 @@ public class Cliente implements Serializable {
     }
 
     /**
-     * @return the dniCuit
+     * @return the documento
      */
-    public String getDniCuit() {
-        return dniCuit;
+    public String getDocumento() {
+        return documento;
     }
 
     /**
-     * @param dniCuit the dniCuit to set
+     * @param documento the documento to set
      */
-    public void setDniCuit(String dniCuit) {
-        this.dniCuit = dniCuit;
+    public void setDocumento(String documento) {
+        this.documento = documento;
     }
 
     /**
@@ -212,5 +195,33 @@ public class Cliente implements Serializable {
     public void setUsuarioModificacion(Integer usuarioModificacion) {
         this.usuarioModificacion = usuarioModificacion;
     }
-    
+
+    /**
+     * @return the responsabilidadIva
+     */
+    public String getResponsabilidadIva() {
+        return responsabilidadIva;
+    }
+
+    /**
+     * @param responsabilidadIva the responsabilidadIva to set
+     */
+    public void setResponsabilidadIva(String responsabilidadIva) {
+        this.responsabilidadIva = responsabilidadIva;
+    }
+
+    /**
+     * @return the tipoDocumento
+     */
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    /**
+     * @param tipoDocumento the tipoDocumento to set
+     */
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
 }

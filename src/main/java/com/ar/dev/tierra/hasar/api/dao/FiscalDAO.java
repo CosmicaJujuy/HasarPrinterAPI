@@ -5,6 +5,7 @@
  */
 package com.ar.dev.tierra.hasar.api.dao;
 
+import com.ar.dev.tierra.hasar.api.model.Cliente;
 import com.ar.dev.tierra.hasar.api.model.DetalleFactura;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -18,10 +19,10 @@ public interface FiscalDAO {
 
     public void ticket(List<DetalleFactura> detalles);
 
-    public String factura_a(List<DetalleFactura> detalles);
+    public void factura_a(List<DetalleFactura> detalles, Cliente cliente);
 
-    public String factura_b(List<DetalleFactura> detalles);
+    public void factura_b(List<DetalleFactura> detalles, Cliente cliente);
 
-    public String factura_c(List<DetalleFactura> detalles);
+    public void factura_c(List<DetalleFactura> detalles, Cliente cliente);
 
 }

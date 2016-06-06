@@ -6,6 +6,7 @@
 package com.ar.dev.tierra.hasar.api.controller;
 
 import com.ar.dev.tierra.hasar.api.dao.FiscalDAO;
+import com.ar.dev.tierra.hasar.api.model.Cliente;
 import com.ar.dev.tierra.hasar.api.model.DetalleFactura;
 import java.io.BufferedReader;
 import java.io.File;
@@ -135,9 +136,41 @@ public class FiscalController implements Serializable {
     }
 
     @RequestMapping(value = "/factura/A", method = RequestMethod.POST)
-    public ResponseEntity<?> factura_A(@RequestParam("detalles") List<DetalleFactura> detalles) {
-
-        return null;
+    public ResponseEntity<?> factura_A(@RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
+        Cliente cliente = new Cliente();
+        for (DetalleFactura detalle : detalles) {
+            cliente = detalle.getFactura().getCliente();
+        }
+        fiscalDAO.factura_a(detalles, cliente);
+        List<String> respuestaList = new ArrayList<>();
+        File ticket = new File("command/factura_a.200");
+        if (ticket.exists()) {
+            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f factura_a.200");
+            p.waitFor();
+            try (FileInputStream respuesta = new FileInputStream("command/factura_a.ans")) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
+                    String strLine;
+                    /* read log line by line */
+                    while ((strLine = br.readLine()) != null) {
+                        respuestaList.add(strLine);
+                    }
+                    System.out.println(respuestaList);
+                    br.close();
+                }
+                /*Comprobamos su existencia y eliminamos*/
+                File file = new File("command/factura_a.ans");
+                File ticket_ans = new File("command/factura_a.200");
+                if (file.exists()) {
+                    file.delete();
+                    ticket_ans.delete();
+                }
+            }
+        }
+        if (!respuestaList.isEmpty()) {
+            return new ResponseEntity<>(respuestaList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(cliente, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/factura/B", method = RequestMethod.POST)
@@ -154,8 +187,6 @@ public class FiscalController implements Serializable {
 
     @RequestMapping(value = "/comprobante/Z", method = RequestMethod.POST)
     public ResponseEntity<?> comprobante_Z() throws FileNotFoundException, IOException, InterruptedException {
-        PrintWriter comprobante = new PrintWriter("command/compZ.200");
-        comprobante.println("9 Z");
         List<String> respuestaList = new ArrayList<>();
         File compZ = new File("command/compZ.200");
         if (compZ.exists()) {
@@ -176,7 +207,7 @@ public class FiscalController implements Serializable {
                 File ticket_ans = new File("command/compZ.200");
                 if (file.exists()) {
                     file.delete();
-                    ticket_ans.delete();
+//                    ticket_ans.delete();
                 }
             }
         }
