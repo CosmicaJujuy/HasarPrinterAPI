@@ -24,5 +24,7 @@ public interface FiscalDAO {
     public void factura_b(List<DetalleFactura> detalles, Cliente cliente);
 
     public void factura_c(List<DetalleFactura> detalles, Cliente cliente);
+    
+    public void regalo(List<DetalleFactura> detalles, String serial);
 
 }

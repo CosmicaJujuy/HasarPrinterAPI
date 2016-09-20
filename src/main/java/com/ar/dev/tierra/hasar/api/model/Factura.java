@@ -22,11 +22,12 @@ public class Factura implements Serializable {
     private String tipoFactura;
     private String numeracion;
     private int idSucursal;
+    private String regalo;
 
     public Factura() {
     }
 
-    public Factura(int idFactura, Cliente cliente, String estado, Usuarios idVendedor, Date fechaCreacion, Date fechaModificacion, Integer usuarioCreacion, Integer usuarioModificacion, BigDecimal total, String tipoFactura, String numeracion, int idSucursal) {
+    public Factura(int idFactura, Cliente cliente, String estado, Usuarios idVendedor, Date fechaCreacion, Date fechaModificacion, Integer usuarioCreacion, Integer usuarioModificacion, BigDecimal total, String tipoFactura, String numeracion, int idSucursal, String regalo) {
         this.idFactura = idFactura;
         this.cliente = cliente;
         this.estado = estado;
@@ -39,6 +40,7 @@ public class Factura implements Serializable {
         this.tipoFactura = tipoFactura;
         this.numeracion = numeracion;
         this.idSucursal = idSucursal;
+        this.regalo = regalo;
     }
 
     /**
@@ -207,6 +209,20 @@ public class Factura implements Serializable {
      */
     public void setIdSucursal(int idSucursal) {
         this.idSucursal = idSucursal;
+    }
+
+    /**
+     * @return the regalo
+     */
+    public String getRegalo() {
+        return regalo;
+    }
+
+    /**
+     * @param regalo the regalo to set
+     */
+    public void setRegalo(String regalo) {
+        this.regalo = regalo;
     }
 
 }

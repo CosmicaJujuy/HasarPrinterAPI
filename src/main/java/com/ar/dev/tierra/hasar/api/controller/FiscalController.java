@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -101,7 +100,8 @@ public class FiscalController implements Serializable {
     }
 
     @RequestMapping(value = "/ticket", method = RequestMethod.POST)
-    public ResponseEntity<?> ticket(@RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
+    public ResponseEntity<?> ticket(
+            @RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
         fiscalDAO.ticket(detalles);
         List<String> respuestaList = new ArrayList<>();
         File ticket = new File("command/ticket.200");
@@ -136,7 +136,8 @@ public class FiscalController implements Serializable {
     }
 
     @RequestMapping(value = "/factura/A", method = RequestMethod.POST)
-    public ResponseEntity<?> factura_A(@RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
+    public ResponseEntity<?> factura_A(
+            @RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
         Cliente cliente = new Cliente();
         for (DetalleFactura detalle : detalles) {
             cliente = detalle.getFactura().getCliente();
@@ -174,15 +175,78 @@ public class FiscalController implements Serializable {
     }
 
     @RequestMapping(value = "/factura/B", method = RequestMethod.POST)
-    public ResponseEntity<?> factura_B(@RequestParam("detalles") List<DetalleFactura> detalles) {
-
-        return null;
+    public ResponseEntity<?> factura_B(
+            @RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
+        Cliente cliente = new Cliente();
+        for (DetalleFactura detalle : detalles) {
+            cliente = detalle.getFactura().getCliente();
+        }
+        fiscalDAO.factura_a(detalles, cliente);
+        List<String> respuestaList = new ArrayList<>();
+        File ticket = new File("command/factura_b.200");
+        if (ticket.exists()) {
+            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f factura_b.200");
+            p.waitFor();
+            try (FileInputStream respuesta = new FileInputStream("command/factura_b.ans")) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
+                    String strLine;
+                    /* read log line by line */
+                    while ((strLine = br.readLine()) != null) {
+                        respuestaList.add(strLine);
+                    }
+                    System.out.println(respuestaList);
+                    br.close();
+                }
+                /*Comprobamos su existencia y eliminamos*/
+                File file = new File("command/factura_b.ans");
+                File ticket_ans = new File("command/factura_b.200");
+                if (file.exists()) {
+                    file.delete();
+                    ticket_ans.delete();
+                }
+            }
+        }
+        if (!respuestaList.isEmpty()) {
+            return new ResponseEntity<>(respuestaList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(cliente, HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @RequestMapping(value = "/factura/C", method = RequestMethod.POST)
-    public ResponseEntity<?> factura_C(@RequestParam("detalles") List<DetalleFactura> detalles) {
-
-        return null;
+    @RequestMapping(value = "/regalo", method = RequestMethod.POST)
+    public ResponseEntity<?> regalo(
+            @RequestBody List<DetalleFactura> detalles,
+            @RequestParam("serial") String serial) throws IOException, InterruptedException {
+        fiscalDAO.regalo(detalles, serial);
+        List<String> respuestaList = new ArrayList<>();
+        File ticket = new File("command/regalo.200");
+        if (ticket.exists()) {
+            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f regalo.200");
+            p.waitFor();
+            try (FileInputStream respuesta = new FileInputStream("command/regalo.ans")) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
+                    String strLine;
+                    /* read log line by line */
+                    while ((strLine = br.readLine()) != null) {
+                        respuestaList.add(strLine);
+                    }
+                    System.out.println(respuestaList);
+                    br.close();
+                }
+                /*Comprobamos su existencia y eliminamos*/
+                File file = new File("command/regalo.ans");
+                File ticket_ans = new File("command/regalo.200");
+                if (file.exists()) {
+                    file.delete();
+                    ticket_ans.delete();
+                }
+            }
+        }
+        if (!respuestaList.isEmpty()) {
+            return new ResponseEntity<>(respuestaList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/comprobante/Z", method = RequestMethod.POST)
@@ -207,7 +271,6 @@ public class FiscalController implements Serializable {
                 File ticket_ans = new File("command/compZ.200");
                 if (file.exists()) {
                     file.delete();
-//                    ticket_ans.delete();
                 }
             }
         }
