@@ -30,7 +30,7 @@ public class FiscalDAOImpl implements FiscalDAO {
 
     @Override
     public void ticket(List<DetalleFactura> detalles) {
-        try (PrintWriter ticket = new PrintWriter("command/ticket.200")) {
+        try (PrintWriter ticket = new PrintWriter("printer_service/command/ticket.200")) {
             DecimalFormat decimalFormat = new DecimalFormat();
             decimalFormat.setMaximumFractionDigits(1);
             ticket.println("@" + (char) 28 + "T" + (char) 28 + "T");
@@ -72,7 +72,7 @@ public class FiscalDAOImpl implements FiscalDAO {
 
     @Override
     public void factura_a(List<DetalleFactura> detalles, Cliente cliente) {
-        try (PrintWriter ticket = new PrintWriter("command/factura_a.200")) {
+        try (PrintWriter ticket = new PrintWriter("printer_service/command/factura_a.200")) {
             DecimalFormat decimalFormat = new DecimalFormat();
             decimalFormat.setMaximumFractionDigits(1);
             ticket.println(
@@ -121,7 +121,7 @@ public class FiscalDAOImpl implements FiscalDAO {
 
     @Override
     public void factura_b(List<DetalleFactura> detalles, Cliente cliente) {
-        try (PrintWriter ticket = new PrintWriter("command/factura_b.200")) {
+        try (PrintWriter ticket = new PrintWriter("printer_service/command/factura_b.200")) {
             DecimalFormat decimalFormat = new DecimalFormat();
             decimalFormat.setMaximumFractionDigits(1);
             ticket.println(
@@ -175,7 +175,7 @@ public class FiscalDAOImpl implements FiscalDAO {
 
     @Override
     public void regalo(List<DetalleFactura> detalles, String serial) {
-        try (PrintWriter ticket = new PrintWriter("command/regalo.200")) {
+        try (PrintWriter ticket = new PrintWriter("printer_service/command/regalo.200")) {
             ticket.println(
                     (char) 128 + (char) 28 // caracter para abrir doc no fiscal homologado
                     + 4 + (char) 28 // talon de regalo

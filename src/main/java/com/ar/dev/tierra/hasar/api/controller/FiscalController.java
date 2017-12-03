@@ -104,7 +104,22 @@ public class FiscalController implements Serializable {
             @RequestBody List<DetalleFactura> detalles) throws IOException, InterruptedException {
         fiscalDAO.ticket(detalles);
         List<String> respuestaList = new ArrayList<>();
-        File ticket = new File("command/ticket.200");
+        File ticket = new File("printer_service/command/ticket.200");
+        ProcessBuilder builder = new ProcessBuilder(
+                "cmd.exe", "/c", "dir");
+        builder.redirectErrorStream(true);
+        Process p2 = builder.start();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p2.getInputStream()))) {
+            String line;
+            /* read log line by line */
+            while (true) {
+                line = br.readLine();
+                if (line == null) {
+                    break;
+                }
+                System.out.println(line);
+            }
+        }
         if (ticket.exists()) {
             Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f ticket.200");
             p.waitFor();
@@ -144,11 +159,11 @@ public class FiscalController implements Serializable {
         }
         fiscalDAO.factura_a(detalles, cliente);
         List<String> respuestaList = new ArrayList<>();
-        File ticket = new File("command/factura_a.200");
+        File ticket = new File("printer_service/command/factura_a.200");
         if (ticket.exists()) {
-            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f factura_a.200");
+            Process p = Runtime.getRuntime().exec("cmd /c cd printer_service/command & wspooler -p3 -f factura_a.200");
             p.waitFor();
-            try (FileInputStream respuesta = new FileInputStream("command/factura_a.ans")) {
+            try (FileInputStream respuesta = new FileInputStream("printer_service/command/factura_a.ans")) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
                     String strLine;
                     /* read log line by line */
@@ -159,8 +174,8 @@ public class FiscalController implements Serializable {
                     br.close();
                 }
                 /*Comprobamos su existencia y eliminamos*/
-                File file = new File("command/factura_a.ans");
-                File ticket_ans = new File("command/factura_a.200");
+                File file = new File("printer_service/command/factura_a.ans");
+                File ticket_ans = new File("printer_service/command/factura_a.200");
                 if (file.exists()) {
                     file.delete();
                     ticket_ans.delete();
@@ -183,11 +198,11 @@ public class FiscalController implements Serializable {
         }
         fiscalDAO.factura_a(detalles, cliente);
         List<String> respuestaList = new ArrayList<>();
-        File ticket = new File("command/factura_b.200");
+        File ticket = new File("printer_service/command/factura_b.200");
         if (ticket.exists()) {
-            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f factura_b.200");
+            Process p = Runtime.getRuntime().exec("cmd /c cd printer_service/command & wspooler -p3 -f factura_b.200");
             p.waitFor();
-            try (FileInputStream respuesta = new FileInputStream("command/factura_b.ans")) {
+            try (FileInputStream respuesta = new FileInputStream("printer_service/command/factura_b.ans")) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
                     String strLine;
                     /* read log line by line */
@@ -198,8 +213,8 @@ public class FiscalController implements Serializable {
                     br.close();
                 }
                 /*Comprobamos su existencia y eliminamos*/
-                File file = new File("command/factura_b.ans");
-                File ticket_ans = new File("command/factura_b.200");
+                File file = new File("printer_service/command/factura_b.ans");
+                File ticket_ans = new File("printer_service/command/factura_b.200");
                 if (file.exists()) {
                     file.delete();
                     ticket_ans.delete();
@@ -219,11 +234,11 @@ public class FiscalController implements Serializable {
             @RequestParam("serial") String serial) throws IOException, InterruptedException {
         fiscalDAO.regalo(detalles, serial);
         List<String> respuestaList = new ArrayList<>();
-        File ticket = new File("command/regalo.200");
+        File ticket = new File("printer_service/command/regalo.200");
         if (ticket.exists()) {
-            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f regalo.200");
+            Process p = Runtime.getRuntime().exec("cmd /c cd printer_service/command & wspooler -p3 -f regalo.200");
             p.waitFor();
-            try (FileInputStream respuesta = new FileInputStream("command/regalo.ans")) {
+            try (FileInputStream respuesta = new FileInputStream("printer_service/command/regalo.ans")) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
                     String strLine;
                     /* read log line by line */
@@ -234,8 +249,8 @@ public class FiscalController implements Serializable {
                     br.close();
                 }
                 /*Comprobamos su existencia y eliminamos*/
-                File file = new File("command/regalo.ans");
-                File ticket_ans = new File("command/regalo.200");
+                File file = new File("printer_service/command/regalo.ans");
+                File ticket_ans = new File("printer_service/command/regalo.200");
                 if (file.exists()) {
                     file.delete();
                     ticket_ans.delete();
@@ -252,11 +267,11 @@ public class FiscalController implements Serializable {
     @RequestMapping(value = "/comprobante/Z", method = RequestMethod.POST)
     public ResponseEntity<?> comprobante_Z() throws FileNotFoundException, IOException, InterruptedException {
         List<String> respuestaList = new ArrayList<>();
-        File compZ = new File("command/compZ.200");
+        File compZ = new File("printer_service/command/compZ.200");
         if (compZ.exists()) {
-            Process p = Runtime.getRuntime().exec("cmd /c cd command & wspooler -p3 -f compZ.200");
+            Process p = Runtime.getRuntime().exec("cmd /c cd printer_service/command & wspooler -p3 -f compZ.200");
             p.waitFor();
-            try (FileInputStream respuesta = new FileInputStream("command/compZ.ans")) {
+            try (FileInputStream respuesta = new FileInputStream("printer_service/command/compZ.ans")) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(respuesta))) {
                     String strLine;
                     /* read log line by line */
@@ -267,8 +282,8 @@ public class FiscalController implements Serializable {
                     br.close();
                 }
                 /*Comprobamos su existencia y eliminamos*/
-                File file = new File("command/compZ.ans");
-                File ticket_ans = new File("command/compZ.200");
+                File file = new File("printer_service/command/compZ.ans");
+                File ticket_ans = new File("printer_service/command/compZ.200");
                 if (file.exists()) {
                     file.delete();
                 }
